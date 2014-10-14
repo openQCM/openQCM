@@ -22,6 +22,8 @@ package openqcm;
  * @authors Marco Mauro and Luciano Zu
  * basic version
  */
+
+//dude
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
