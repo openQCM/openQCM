@@ -1,4 +1,0 @@
-openQCM
-=======
-
-openQCM repository
