@@ -20,7 +20,8 @@ package openqcm;
 /**
  *
  * @authors Marco Mauro and Luciano Zu
- * basic version
+ * version  basic 
+ * date     oct 2014
  */
 
 import java.awt.BorderLayout;
