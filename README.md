@@ -16,7 +16,7 @@ OpenQCM software uses [Ardulink](http://www.ardulink.org/), the open source Java
 openQCM ia free software licensed under [GNU GPL v3.0](http://www.gnu.org/licenses/gpl-3.0.txt) General Public License 
 
 ##Info##
-Follow the wiki for info and latest update on openQCM software.
+Follow the [wiki](https://github.com/marcomauro/openQCM/wiki/openQCM-Wiki) for info and latest update on openQCM software.
 
 ##Acknowledgements##
 - [Novaetech S.r.l.](http://www.novaetech.it/en/) for supporting and powering the openQCM project. 
