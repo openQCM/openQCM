@@ -43,6 +43,7 @@ import javax.swing.UIManager;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.ImageIcon;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -77,6 +78,7 @@ public class RawMonitor implements RawDataListener {
     private JButton btnOpenFile;
     private JButton btnClearDataSet; // clear graph
     private JLabel fileLabel;
+    private JLabel logoLabel;
     private JLabel data0Name;
     private JLabel data0Value;
     private JLabel data1Name;
@@ -264,7 +266,15 @@ public class RawMonitor implements RawDataListener {
         c.gridx = 2;
         c.gridy = 1;
         controlPanel.add(fileLabel, c);
-
+        
+        // insert logo 
+        ImageIcon logo = new ImageIcon("openQCM-logo.png");
+        logoLabel = new JLabel (logo, JLabel.LEFT);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 1;
+        controlPanel.add(logoLabel, c);
+         
         // Display Data in JText Field
         data0Name = new JLabel("Data0 = ");
         data0Value = new JLabel("NaN");
