@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout; 
 import java.awt.GridBagConstraints;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -130,6 +132,10 @@ public class RawMonitor implements RawDataListener {
     private void initialize() {
         frmArdulinkAnalogMonitor = new JFrame();
         frmArdulinkAnalogMonitor.setTitle("openQCM version 0");
+        java.net.URL url = getClass().getResource("concept-logo-RGB-QUA.png");
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Image img = kit.createImage(url);
+        frmArdulinkAnalogMonitor.setIconImage(img);
         frmArdulinkAnalogMonitor.setBounds(100, 100, 800, 600);
         frmArdulinkAnalogMonitor.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -269,7 +275,7 @@ public class RawMonitor implements RawDataListener {
         controlPanel.add(fileLabel, c);
         
         // insert logo 
-        ImageIcon logo = new ImageIcon("openQCM-logo.png");
+        ImageIcon logo = new ImageIcon(getClass().getResource("openQCM-logo.png"));
         logoLabel = new JLabel (logo, JLabel.LEFT);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
