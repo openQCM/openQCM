@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * moved to openQCM repo 
  */
 
 package openqcm;
@@ -131,7 +130,7 @@ public class RawMonitor implements RawDataListener {
      */
     private void initialize() {
         frmArdulinkAnalogMonitor = new JFrame();
-        frmArdulinkAnalogMonitor.setTitle("openQCM version 0");
+        frmArdulinkAnalogMonitor.setTitle("openQCM basic version");
         java.net.URL url = getClass().getResource("concept-logo-RGB-QUA.png");
         Toolkit kit = Toolkit.getDefaultToolkit();
         Image img = kit.createImage(url);
@@ -387,7 +386,7 @@ public class RawMonitor implements RawDataListener {
 
             // plot new data
             datasets[0].getSeries(0).add(new Millisecond(), data0);
-            //TODO Do not show temperature data 
+            //Do not show temperature chart 
             //datasets[1].getSeries(0).add(new Millisecond(), data1);
 
             // print new data value on the screen
