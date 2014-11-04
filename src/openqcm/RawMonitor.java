@@ -94,7 +94,7 @@ public class RawMonitor implements RawDataListener {
     /**
      * The number of subplots.
      */
-    public static final int SUBPLOT_COUNT = 2;
+    public static final int SUBPLOT_COUNT = 1;
 
     /**
      * The datasets.
@@ -141,7 +141,7 @@ public class RawMonitor implements RawDataListener {
 
         // Initialize the contents of the frame.
         JPanel controlPanel = new JPanel();
-        JPanel dataPanel = new JPanel(new GridLayout(2, 2));
+        JPanel dataPanel = new JPanel(new GridLayout(8, 1));
         frmArdulinkAnalogMonitor.getContentPane().add(controlPanel, BorderLayout.SOUTH);
         frmArdulinkAnalogMonitor.getContentPane().add(dataPanel, BorderLayout.EAST);
 
@@ -275,19 +275,24 @@ public class RawMonitor implements RawDataListener {
         controlPanel.add(fileLabel, c);
         
         // insert logo 
+        /*
         ImageIcon logo = new ImageIcon(getClass().getResource("openQCM-logo.png"));
         logoLabel = new JLabel (logo, JLabel.LEFT);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = 1;
         controlPanel.add(logoLabel, c);
-         
+        */ 
+        ImageIcon logo = new ImageIcon(getClass().getResource("openQCM-logo.png"));
+        logoLabel = new JLabel (logo, JLabel.LEFT);
+        dataPanel.add(logoLabel);
+        
         // Display Data in JText Field
-        data0Name = new JLabel("Data0 = ");
+        data0Name = new JLabel("Frequency (Hz)");
         data0Value = new JLabel("NaN");
         dataPanel.add(data0Name);
         dataPanel.add(data0Value);
-        data1Name = new JLabel("Data1 = ");
+        data1Name = new JLabel("Temperature (°C)");
         data1Value = new JLabel("NaN");
         dataPanel.add(data1Name);
         dataPanel.add(data1Value);
@@ -296,6 +301,23 @@ public class RawMonitor implements RawDataListener {
         CombinedDomainXYPlot plot = new CombinedDomainXYPlot(new DateAxis("Time"));
         datasets = new TimeSeriesCollection[SUBPLOT_COUNT];
         for (int i = 0; i < SUBPLOT_COUNT; i++) {
+            if (i == 0){
+                TimeSeries series = new TimeSeries("Frequency");
+                datasets[i] = new TimeSeriesCollection(series);
+                NumberAxis rangeAxis = new NumberAxis("Frequency (Hz)");
+                rangeAxis.setAutoRangeIncludesZero(false);
+                rangeAxis.setAutoRange(true);
+                XYPlot subplot = new XYPlot(
+                    datasets[i], null, rangeAxis, new StandardXYItemRenderer()
+                );
+                subplot.setBackgroundPaint(Color.white);
+                subplot.setDomainGridlinePaint(Color.lightGray);
+                subplot.setRangeGridlinePaint(Color.lightGray);
+                subplot.getRenderer().setSeriesPaint(0, new Color(0, 142, 192));
+                plot.add(subplot);
+            }
+            
+            /* Do not show temperature chart 
             TimeSeries series = new TimeSeries("DATA" + i);
             datasets[i] = new TimeSeriesCollection(series);
             NumberAxis rangeAxis = new NumberAxis("Data" + i);
@@ -308,9 +330,11 @@ public class RawMonitor implements RawDataListener {
             subplot.setDomainGridlinePaint(Color.lightGray);
             subplot.setRangeGridlinePaint(Color.lightGray);
             plot.add(subplot);
+            */
+            
         }
 
-        JFreeChart chart = new JFreeChart("Data Chart", plot);
+        JFreeChart chart = new JFreeChart("Quartz Crystal Microbalance Frequency Chart", plot);
         chart.setBorderPaint(Color.lightGray);
         chart.setBorderVisible(true);
         chart.setBackgroundPaint(Color.white);
@@ -363,7 +387,8 @@ public class RawMonitor implements RawDataListener {
 
             // plot new data
             datasets[0].getSeries(0).add(new Millisecond(), data0);
-            datasets[1].getSeries(0).add(new Millisecond(), data1);
+            //TODO Do not show temperature data 
+            //datasets[1].getSeries(0).add(new Millisecond(), data1);
 
             // print new data value on the screen
             data0Value.setText(dataSplits[0]);
