@@ -153,8 +153,16 @@ public class RawMonitor implements RawDataListener {
         serialConnectionPanel = new SerialConnectionPanel();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
-        c.gridy = 0;
+        c.gridy = 1;
         controlPanel.add(serialConnectionPanel, c);
+        
+        // Connection Status
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 0.5;
+        c.gridx = 1;
+        c.gridy = 1;
+        ConnectionStatus connectionStatus = new ConnectionStatus();
+        controlPanel.add(connectionStatus, c);
         
         // Serial Connect button
         btnConnect = new JButton("Connect");
@@ -200,8 +208,8 @@ public class RawMonitor implements RawDataListener {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
-        c.gridx = 1;
-        c.gridy = 0;
+        c.gridx = 2;
+        c.gridy = 1;
         controlPanel.add(btnConnect, c);
         
         // Serial Disconnect button
@@ -223,18 +231,10 @@ public class RawMonitor implements RawDataListener {
         });
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
-        c.gridx = 2;
-        c.gridy = 0;
-        controlPanel.add(btnDisconnect, c);
-        
-        // Connection Status
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.5;
         c.gridx = 3;
-        c.gridy = 0;
-        ConnectionStatus connectionStatus = new ConnectionStatus();
-        controlPanel.add(connectionStatus, c);
-        
+        c.gridy = 1;
+        controlPanel.add(btnDisconnect, c);
+            
         // Save Data File Button
         btnOpenFile = new JButton("Save File");
         fileLabel = new JLabel("null");
@@ -266,11 +266,11 @@ public class RawMonitor implements RawDataListener {
         });
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 1;
-        c.gridy = 1;
+        c.gridy = 0;
         controlPanel.add(btnOpenFile, c);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 2;
-        c.gridy = 1;
+        c.gridy = 0;
         controlPanel.add(fileLabel, c);
         
         // insert logo 
@@ -361,7 +361,7 @@ public class RawMonitor implements RawDataListener {
         });
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 3;
-        c.gridy = 1;
+        c.gridy = 0;
         controlPanel.add(btnClearDataSet, c);
         
         // Register a RawDataListener to receive data from Arduino.
