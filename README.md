@@ -18,7 +18,9 @@ The users of openQCM software can directly download the executable program on th
 ![openQCM-GUI](https://dl.dropboxusercontent.com/u/51833595/openQCM_main_GUI_signal.PNG)
 
 openQCM Java software v0.2 application user interface GUI.
+
 The **openQCM GUI** is designed to accomplish the following tasks:
+
 1. **Connect Arduino** find the COM port and set the serial connection between the Arduino board and your PC.
 2. **Read Data** read the QCM frequency and temperature data available at the connection COM port.
 3. **Plot Data** plot the QCM frequency and temperature data using a real time chart.
