@@ -61,6 +61,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         this.setIconImage(img);
         appInit();
         initComponents();
+        // Register a RawDataListener to receive data from Arduino.
         link.addRawDataListener(this);
     }
 
@@ -326,6 +327,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
                 startBtn.setSelected(false);
             } else {
                 try {
+                    // Connect to the Arduino board
                     link.connect(portCOM);
                     startBtn.setText("Disconnect");
                 } catch (Exception ex) {
