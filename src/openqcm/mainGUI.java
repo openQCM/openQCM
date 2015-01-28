@@ -78,7 +78,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         startBtn = new javax.swing.JToggleButton();
         titleJTextField = new javax.swing.JTextField();
         jPanelChart = new javax.swing.JPanel();
-        chartData = new openqcm_dev3.ChartDynamicData();
+        chartData = new openqcm.ChartDynamicData();
         logoImage = new javax.swing.JLabel();
         clearChartBtn = new javax.swing.JButton();
         showTemperatureBtn = new javax.swing.JToggleButton();
@@ -149,9 +149,6 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
 
         jPanelChart.setBackground(new java.awt.Color(0, 142, 192));
 
-        chartData.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        chartData.setPreferredSize(new java.awt.Dimension(680, 341));
-
         logoImage.setIcon(new javax.swing.ImageIcon(getClass().getResource("/openqcm/openQCM-logo.png"))); // NOI18N
         logoImage.setText("jLabel1");
 
@@ -217,8 +214,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
                         .addGap(18, 18, 18)
                         .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4)
-                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanelChartLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(chartData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -240,13 +236,11 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
                             .addComponent(clearChartBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(showTemperatureBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(frequencyCurrent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(chartData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(jPanelChartLayout.createSequentialGroup()
-                        .addComponent(logoImage, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(347, 347, 347))))
+                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(logoImage, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chartData, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -413,7 +407,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private openqcm_dev3.ChartDynamicData chartData;
+    private openqcm.ChartDynamicData chartData;
     private javax.swing.JButton clearChartBtn;
     private javax.swing.JFormattedTextField frequencyCurrent;
     private javax.swing.JLabel jLabel1;
