@@ -23,7 +23,7 @@ import java.util.NoSuchElementException;
  * @author Marco
  */
 public class ArrayCircularBuffer <T>{
-    // internal data storage  
+    // internal data storage 
       public T[] data;  
       // indices for inserting and removing from queue  
       private int front = 0;  
