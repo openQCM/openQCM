@@ -55,11 +55,9 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
      * Creates new form mainGUI
      */
     public mainGUI() {
-        java.net.URL url = getClass().getResource("concept-logo-RGB-QUA.png");
-        Toolkit kit = Toolkit.getDefaultToolkit();
-        Image img = kit.createImage(url);
-        this.setIconImage(img);
+        // Show the splash screen
         appInit();
+        // Generated code initialize GUI components
         initComponents();
         // Register a RawDataListener to receive data from Arduino.
         link.addRawDataListener(this);
