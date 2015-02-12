@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.zu.ardulink.Link;
 import org.zu.ardulink.RawDataListener;
 
@@ -48,8 +49,12 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     private final int bufferSize = 10;
     // frequency array circular buffer
     ArrayCircularBuffer bufferFrequency = new ArrayCircularBuffer(bufferSize);
+    // frequency circular buffer temp for eliminating glitches
+    ArrayCircularBuffer bufferFrequencyTemp = new ArrayCircularBuffer(bufferSize/2);
     // temperauture circular buffer
     ArrayCircularBuffer bufferTemperature = new ArrayCircularBuffer(bufferSize);
+    // temperature circular buffer for smoothing data
+    ArrayCircularBuffer bufferTemperatureTemp = new ArrayCircularBuffer(bufferSize/2);
 
     /**
      * Creates new form mainGUI
@@ -89,7 +94,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("openQCM 0.2");
+        setTitle("openQCM 1.0");
         setIconImages(null);
         setMinimumSize(new java.awt.Dimension(720, 500));
         setName("applicationFrame"); // NOI18N
@@ -343,6 +348,9 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             boolean disconnected = link.disconnect();
             chartData.clearChart();
             startBtn.setText("Connect");
+            // stop save file
+            saveFileBtn.setText("Save File");
+            saveFileBtn.setSelected(false);
         }
 
     }//GEN-LAST:event_startBtnActionPerformed
@@ -354,20 +362,17 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         this.setIconImage(img);
     }//GEN-LAST:event_formWindowOpened
 
-    // add a dumb delay to show splashscreen wait 5 second
+    // add a dumb delay to show splashscreen wait 2 second
     private static void appInit()
     {
-        for(int i=1;i<=3;i++)
-        {
             try
             {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             }
             catch (InterruptedException ex)
             {
                 // ignore it
             }
-        }
     }
     
     
@@ -444,41 +449,73 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             String[] dataSplits = messageString.split("_");
             int dataFrequency = (int) (Integer.parseInt(dataSplits[0]));
             int dataTemperature = Integer.parseInt(dataSplits[1]);
-
-            // insert new frequency data in circuar buffer and calculate the mean value
-            bufferFrequency.insert(dataFrequency);
+            
+            /* 
+             * Frequency Median implemented using Apache commons Math
+             * frequency data are affected by some glitches due to the 
+             * algorithm for counting pulses during a fixed time interval
+             * median is a robust algorithm for smoothing frequency data
+             * and for eliminating outliers
+             */
+            
+            // insert new frequency data in circuar buffer and calculate median
+            bufferFrequencyTemp.insert(dataFrequency);
+            // read the circular buffer
+            int count = bufferFrequencyTemp.size();
+            double values [] = new double [count];
+            for (int i = 0; i < count; i++) values[i] = (int) (bufferFrequencyTemp.data[i]);
+            Median median = new Median();
+            // calculate the median of frequency data
+            int medianFrequency = (int) median.evaluate(values);
+            
+            // insert new median frequency data in circuar buffer and calculate the mean value
+            bufferFrequency.insert(medianFrequency);
             double sum = 0;
             for (int i = 0; i < bufferFrequency.size(); i++) {
                 sum = sum + (int) bufferFrequency.data[i];
             }
+            // give me Frequency data
             double meanFrequency = sum / bufferFrequency.size();
-
-//            Median implemented TODO 
-//            int count = buffer.size();
-//            double values [] = new double [count];
-//            for (int i = 0; i < count; i++) values[i] = (int) (buffer.data[i]);
-//            Median median = new Median();
-//            double average = median.evaluate(values);
             
-            // insert new Temperature data in circuar buffer and calculate the mean value
-            bufferTemperature.insert(dataTemperature);
+            // using the same algorithm to smoothing temperature data
+            // insert new Temperature data in circuar buffer and calculate the median 
+            bufferTemperatureTemp.insert(dataTemperature);
+            int countT = bufferTemperatureTemp.size();
+            double valuesT [] = new double [countT];
+            for (int i = 0; i < countT; i++) valuesT[i] = (int) (bufferTemperatureTemp.data[i]);
+            Median medianT = new Median();
+            // calculate the median of frequency data
+            int medianTemperature = (int) medianT.evaluate(valuesT);
+            
+            // insert new Temperature median data in circuar buffer and calculate the mean value
+            bufferTemperature.insert(medianTemperature);
+            // calculate the mean of temperature data 
             double sumT = 0;
             for (int i = 0; i < bufferTemperature.size(); i++) {
                 sumT = sumT + (int) bufferTemperature.data[i];
             }
+            // give me Temperature data
             double meanTemperature = sumT / bufferTemperature.size();
             
             // display data
             frequencyCurrent.setText(String.format("%.1f", meanFrequency));
             temperatureCurrent.setText(String.format("%.1f", meanTemperature));
 
-            // chart new frequency data in dynamic chart
+            // add new data in dynamic chart. Frequency data plot by default
             chartData.addFrequencyData(meanFrequency);
+            chartData.addTemperatureData(meanTemperature);
             
-            // chart new temperature data in dynamic chart
+            // show temperature data in dynamic chart
             if (showTemperatureBtn.isSelected() == true) {
-                chartData.addTemperatureData(meanTemperature);
+                //chartData.addTemperatureData(meanTemperature);
+                chartData.showChartTemperature();
             }
+            // hide temperature  
+            else if (showTemperatureBtn.isSelected() == false){
+                chartData.hideChartTemperature();
+            }
+            // check domain axis
+            chartData.checkDomainAxis();
 
             // store data 
             if (saveFileBtn.isSelected() == true) {
