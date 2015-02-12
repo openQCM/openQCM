@@ -5,7 +5,7 @@
 [openQCM](http://openqcm.com/) is the unique opensource quartz crystal microbalance
 
 ##Intro##
-This is the latest release of openQCM Java software version 0.2. The repository is designed  for the developers and contributors of the open source project.
+This is the latest release of openQCM Java software version 1.0 stable version. The repository is designed  for the developers and contributors of the open source project.
 The openQCM software is developed using Java 8 programming language and NetBeans development environment (IDE). You need to configure your Java Runtime Environment JRE to run the project correctly.
 
 openQCM sw uses the RXTX Java library which provides serial communication for the Java Development Kit JDK. Refer to [Arduino Playground](http://playground.arduino.cc/Interfacing/Java) for more info about Arduino and Java interfacing. 
