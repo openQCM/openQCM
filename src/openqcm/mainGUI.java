@@ -39,7 +39,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
 
     // the COM port connected to Arduino
     private String portCOM;
-    // Ardulink link class for communication and connection with Arduino
+    // Ardulink link class for communication with Arduino
     private final Link link = Link.getDefaultInstance();
     // Store file for data recording
     File sf;
@@ -47,14 +47,14 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     private FileWriter fw;
     // size of circular buffer
     private final int bufferSize = 10;
-    // frequency array circular buffer
-    ArrayCircularBuffer bufferFrequency = new ArrayCircularBuffer(bufferSize);
-    // frequency circular buffer temp for eliminating glitches
-    ArrayCircularBuffer bufferFrequencyTemp = new ArrayCircularBuffer(bufferSize/2);
-    // temperauture circular buffer
+    // frequency circular buffer for eliminating signal glitches using median
+    ArrayCircularBuffer bufferFrequency = new ArrayCircularBuffer(bufferSize/2);
+    // frequency circular buffer for averaging frequency data
+    ArrayCircularBuffer bufferFrequencyTemp = new ArrayCircularBuffer(bufferSize);
+    // temperauture circular buffer for averaging temperature data
     ArrayCircularBuffer bufferTemperature = new ArrayCircularBuffer(bufferSize);
     // temperature circular buffer for smoothing data
-    ArrayCircularBuffer bufferTemperatureTemp = new ArrayCircularBuffer(bufferSize/2);
+    // ArrayCircularBuffer bufferTemperatureTemp = new ArrayCircularBuffer(bufferSize/2);
 
     /**
      * Creates new form mainGUI
@@ -272,7 +272,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     // add action for save data into file
     private void saveFileBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFileBtnActionPerformed
 
-        // if th button is pressed
+        // if the button is pressed
         if (saveFileBtn.isSelected() == true) {
             saveFileBtn.setText("Stop Save");
             // open a file chooser
@@ -355,6 +355,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
 
     }//GEN-LAST:event_startBtnActionPerformed
 
+    // set the application icon image
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         java.net.URL url = getClass().getResource("openQCM-icon-30x30.png");
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -450,13 +451,8 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             int dataFrequency = (int) (Integer.parseInt(dataSplits[0]));
             int dataTemperature = Integer.parseInt(dataSplits[1]);
             
-            /* 
-             * Frequency Median implemented using Apache commons Math
-             * frequency data are affected by some glitches due to the 
-             * algorithm for counting pulses during a fixed time interval
-             * median is a robust algorithm for smoothing frequency data
-             * and for eliminating outliers
-             */
+            
+            /*
             
             // insert new frequency data in circuar buffer and calculate median
             bufferFrequencyTemp.insert(dataFrequency);
@@ -477,8 +473,39 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             // give me Frequency data
             double meanFrequency = sum / bufferFrequency.size();
             
+            */
+            
+            /* 
+             * Frequency Median implemented using Apache commons Math
+             * frequency data are affected by some glitches due to the 
+             * algorithm for counting pulses during a fixed time interval
+             * median is a robust algorithm for smoothing frequency data
+             * and for eliminating outliers
+             * Frequency data processing algorithm: averaging and calculate median 
+             */
+            
+            // insert new frequency data in circuar buffer and calculate the average
+            bufferFrequencyTemp.insert(dataFrequency);
+            double sum = 0;
+            for (int i = 0; i < bufferFrequencyTemp.size(); i++) {
+                sum = sum + (int) bufferFrequencyTemp.data[i];
+            }
+            // Average frequency data 
+            double averageFrequency = sum / bufferFrequencyTemp.size();
+            // insert new average frequency data in circuar buffer and calculate median
+            bufferFrequency.insert(averageFrequency);
+            // read the circular buffer
+            int count = bufferFrequency.size();
+            double values [] = new double [count];
+            for (int i = 0; i < count; i++) values[i] = (double) (bufferFrequency.data[i]);
+            Median median = new Median();
+            // calculate the median of frequency data
+            double meanFrequency = (double) median.evaluate(values);
+            
             // using the same algorithm to smoothing temperature data
             // insert new Temperature data in circuar buffer and calculate the median 
+            /*
+            / NOT MEDIAN for TEMPERATURE
             bufferTemperatureTemp.insert(dataTemperature);
             int countT = bufferTemperatureTemp.size();
             double valuesT [] = new double [countT];
@@ -486,16 +513,22 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             Median medianT = new Median();
             // calculate the median of frequency data
             int medianTemperature = (int) medianT.evaluate(valuesT);
-            
+            */
+                    
             // insert new Temperature median data in circuar buffer and calculate the mean value
-            bufferTemperature.insert(medianTemperature);
-            // calculate the mean of temperature data 
+            //bufferTemperature.insert(medianTemperature);
+            
+            // insert temperature data in circuar buffer and calculate the average 
+            bufferTemperature.insert(dataTemperature);
             double sumT = 0;
             for (int i = 0; i < bufferTemperature.size(); i++) {
                 sumT = sumT + (int) bufferTemperature.data[i];
             }
-            // give me Temperature data
+            // Average temperature data
             double meanTemperature = sumT / bufferTemperature.size();
+            
+            // TODO divide by 10 for decimal
+            meanTemperature = meanTemperature/10;
             
             // display data
             frequencyCurrent.setText(String.format("%.1f", meanFrequency));
