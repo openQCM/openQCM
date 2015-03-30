@@ -94,7 +94,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("openQCM 1.0");
+        setTitle("openQCM 1.1");
         setIconImages(null);
         setMinimumSize(new java.awt.Dimension(720, 500));
         setName("applicationFrame"); // NOI18N
