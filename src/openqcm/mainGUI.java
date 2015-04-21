@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package openqcm;
+package scutqcm;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -413,7 +413,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private openqcm.ChartDynamicData chartData;
+    private scutqcm.ChartDynamicData chartData;
     private javax.swing.JButton clearChartBtn;
     private javax.swing.JFormattedTextField frequencyCurrent;
     private javax.swing.JLabel jLabel1;
