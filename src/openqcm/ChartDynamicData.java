@@ -47,6 +47,9 @@ public class ChartDynamicData extends JPanel{
     private final TimeSeriesCollection datasetTemperature;
     private XYPlot plot = new XYPlot();
     private XYItemRenderer rendererT = new StandardXYItemRenderer();
+    private NumberAxis rangeAxisF = new NumberAxis();
+    private NumberAxis rangeAxisT = new NumberAxis();
+    
     CombinedDomainXYPlot plotComb = new CombinedDomainXYPlot(new DateAxis("Time (hh:mm:ss)"));
     ValueAxis domainAxis = plotComb.getDomainAxis();
     
@@ -55,7 +58,7 @@ public class ChartDynamicData extends JPanel{
         // add primary axis frequency
         TimeSeries seriesFrequency = new TimeSeries("Frequency (Hz)");
         datasetFrequency = new TimeSeriesCollection(seriesFrequency);
-        NumberAxis rangeAxisF = new NumberAxis("Frequency (Hz)");
+        rangeAxisF = new NumberAxis("Frequency (Hz)");
         XYItemRenderer renderer = new StandardXYItemRenderer();
         renderer.setSeriesPaint(0, new Color(0, 142, 192));
         rangeAxisF.setAutoRangeIncludesZero(false);
@@ -87,15 +90,18 @@ public class ChartDynamicData extends JPanel{
         plotComb.setBackgroundPaint(Color.white);
         plotComb.setDomainGridlinePaint(Color.white);
         plotComb.setRangeGridlinePaint(Color.white);
+        // enable panning for both axis
+        plotComb.setRangePannable(true);
+        plotComb.setDomainPannable(true);
                 
         // set time axis properties
         // format time axis as hh:mm:ss
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         DateAxis axis = (DateAxis) plotComb.getDomainAxis();
         axis.setDateFormatOverride(format);
-        // default suto range
+        // default auto range
         domainAxis.setAutoRange(true);
-                
+        
         // init the JFreeChart
         JFreeChart chart = new JFreeChart(plotComb);
         chart.setBorderPaint(Color.lightGray);
@@ -110,6 +116,9 @@ public class ChartDynamicData extends JPanel{
         // constructor for org.jfree.chart.ChartPanel
         // ChartPanel(JFreeChart chart, boolean properties, boolean save, boolean print, boolean zoom, boolean tooltips)
         ChartPanel chartPanel = new ChartPanel(chart, false, true, true, true, true);
+        // enable mouse wheel support for the chart panel
+        chartPanel.setMouseWheelEnabled(true);
+        
         this.setLayout (new BorderLayout());
         // add real time chart to the frame
         this.add(chartPanel);
@@ -131,6 +140,12 @@ public class ChartDynamicData extends JPanel{
         datasetFrequency.getSeries(0).clear();
         datasetTemperature.getSeries(0).clear();
         domainAxis.setFixedAutoRange(0);
+        domainAxis.setAutoRange(true);
+        rangeAxisF.setAutoRange(true);
+        rangeAxisF.setAutoRangeMinimumSize(50);
+        rangeAxisT.setAutoRangeIncludesZero(false);
+        rangeAxisT.setAutoRange(true);
+        rangeAxisT.setAutoRangeMinimumSize(5);
     }
    
     // hide temperature chart by setting colour line transparency 
@@ -147,10 +162,10 @@ public class ChartDynamicData extends JPanel{
     
     // check the lenght of domain axis
     public void checkDomainAxis(){
-        // fixed domain time interval 5 minutes TODO you can take more time dude !
-        int domainTime = 300000; 
+        // fixed domain time interval 10 minutes TODO you can take more time dude !
+        int domainTime = 600000; 
         double domainTimeCurrent = domainAxis.getRange().getLength();
-        System.out.println(domainTimeCurrent);
+        //System.out.println(domainTimeCurrent);
         if (domainTimeCurrent > domainTime) domainAxis.setFixedAutoRange(domainTime);
     }
 }

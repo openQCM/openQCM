@@ -55,6 +55,10 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     ArrayCircularBuffer bufferTemperature = new ArrayCircularBuffer(bufferSize);
     // temperature circular buffer for smoothing data
     // ArrayCircularBuffer bufferTemperatureTemp = new ArrayCircularBuffer(bufferSize/2);
+    // nominal quartz crystal frequency
+    int FrequencyNominal = 6000000;
+    // Arduino half timer clock
+    int ALIAS = 8000000;
 
     /**
      * Creates new form mainGUI
@@ -65,7 +69,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         // Generated code initialize GUI components
         initComponents();
         // Register a RawDataListener to receive data from Arduino.
-        link.addRawDataListener(this);
+        link.addRawDataListener(this);           
     }
 
     /**
@@ -92,6 +96,8 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        FrequencyBox = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("openQCM 1.1");
@@ -195,6 +201,16 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Temperature (°C)");
 
+        FrequencyBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "6   MHz", "10 MHz" }));
+        FrequencyBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FrequencyBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel5.setText("Quartz Frequency");
+
         javax.swing.GroupLayout jPanelChartLayout = new javax.swing.GroupLayout(jPanelChart);
         jPanelChart.setLayout(jPanelChartLayout);
         jPanelChartLayout.setHorizontalGroup(
@@ -217,8 +233,12 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
                             .addComponent(jLabel3))
                         .addGap(18, 18, 18)
                         .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(FrequencyBox, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanelChartLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(chartData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -234,13 +254,16 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel4)
+                                .addComponent(jLabel5)))
                         .addGap(1, 1, 1)
-                        .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(clearChartBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(showTemperatureBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(frequencyCurrent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(temperatureCurrent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(clearChartBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(showTemperatureBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(frequencyCurrent)
+                            .addComponent(temperatureCurrent)
+                            .addComponent(FrequencyBox)))
                     .addComponent(logoImage, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chartData, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
@@ -363,6 +386,21 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
         this.setIconImage(img);
     }//GEN-LAST:event_formWindowOpened
 
+    // select the quartz crystal 6 MHz or 10 MHz nominal frequency 
+    private void FrequencyBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FrequencyBoxActionPerformed
+        String getFrequencyAlias = (String) FrequencyBox.getSelectedItem();
+        //System.out.println(getFrequencyAlias);
+        if (getFrequencyAlias == "6   MHz"){
+            System.out.println("6");
+            FrequencyNominal = 6000000;
+            chartData.clearChart();
+        }
+        else if (getFrequencyAlias == "10 MHz"){
+            FrequencyNominal = 10000000;
+            chartData.clearChart();
+        }
+    }//GEN-LAST:event_FrequencyBoxActionPerformed
+
     // add a dumb delay to show splashscreen wait 2 second
     private static void appInit()
     {
@@ -413,6 +451,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox FrequencyBox;
     private openqcm.ChartDynamicData chartData;
     private javax.swing.JButton clearChartBtn;
     private javax.swing.JFormattedTextField frequencyCurrent;
@@ -420,6 +459,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanelBottom;
     private javax.swing.JPanel jPanelChart;
     private javax.swing.JLabel logoImage;
@@ -450,31 +490,7 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             String[] dataSplits = messageString.split("_");
             int dataFrequency = (int) (Integer.parseInt(dataSplits[0]));
             int dataTemperature = Integer.parseInt(dataSplits[1]);
-            
-            
-            /*
-            
-            // insert new frequency data in circuar buffer and calculate median
-            bufferFrequencyTemp.insert(dataFrequency);
-            // read the circular buffer
-            int count = bufferFrequencyTemp.size();
-            double values [] = new double [count];
-            for (int i = 0; i < count; i++) values[i] = (int) (bufferFrequencyTemp.data[i]);
-            Median median = new Median();
-            // calculate the median of frequency data
-            int medianFrequency = (int) median.evaluate(values);
-            
-            // insert new median frequency data in circuar buffer and calculate the mean value
-            bufferFrequency.insert(medianFrequency);
-            double sum = 0;
-            for (int i = 0; i < bufferFrequency.size(); i++) {
-                sum = sum + (int) bufferFrequency.data[i];
-            }
-            // give me Frequency data
-            double meanFrequency = sum / bufferFrequency.size();
-            
-            */
-            
+    
             /* 
              * Frequency Median implemented using Apache commons Math
              * frequency data are affected by some glitches due to the 
@@ -501,22 +517,8 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             Median median = new Median();
             // calculate the median of frequency data
             double meanFrequency = (double) median.evaluate(values);
-            
-            // using the same algorithm to smoothing temperature data
-            // insert new Temperature data in circuar buffer and calculate the median 
-            /*
-            / NOT MEDIAN for TEMPERATURE
-            bufferTemperatureTemp.insert(dataTemperature);
-            int countT = bufferTemperatureTemp.size();
-            double valuesT [] = new double [countT];
-            for (int i = 0; i < countT; i++) valuesT[i] = (int) (bufferTemperatureTemp.data[i]);
-            Median medianT = new Median();
-            // calculate the median of frequency data
-            int medianTemperature = (int) medianT.evaluate(valuesT);
-            */
-                    
-            // insert new Temperature median data in circuar buffer and calculate the mean value
-            //bufferTemperature.insert(medianTemperature);
+            // alias arduino timer 
+            if (FrequencyNominal == 10000000) meanFrequency = (2 * ALIAS) - meanFrequency;
             
             // insert temperature data in circuar buffer and calculate the average 
             bufferTemperature.insert(dataTemperature);
@@ -526,7 +528,6 @@ public class mainGUI extends javax.swing.JFrame implements RawDataListener {
             }
             // Average temperature data
             double meanTemperature = sumT / bufferTemperature.size();
-            
             // TODO divide by 10 for decimal
             meanTemperature = meanTemperature/10;
             
